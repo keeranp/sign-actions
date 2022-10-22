@@ -47,6 +47,21 @@ model.load_weights("action.h5")
 # Access the webcam
 capture = cv2.VideoCapture(0)
 
+
+def draw_prediction(sentence, image):
+    cv2.rectangle(image, (0, 0), (640, 40), (255, 128, 0), -1)
+    cv2.putText(
+        image,
+        " ".join(sentence),
+        (3, 30),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (255, 255, 255),
+        1,
+        cv2.LINE_AA,
+    )
+
+
 with mp_holistic.Holistic(
     min_detection_confidence=0.5, min_tracking_confidence=0.5
 ) as holistic:
@@ -85,17 +100,7 @@ with mp_holistic.Holistic(
         if len(sentence) > 5:
             sentence = sentence[-5:]
 
-        cv2.rectangle(image, (0, 0), (640, 40), (255, 128, 0), -1)
-        cv2.putText(
-            image,
-            " ".join(sentence),
-            (3, 30),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (255, 255, 255),
-            1,
-            cv2.LINE_AA,
-        )
+        draw_prediction(sentence, image)
 
         # Show the feed
         cv2.imshow("OpenCV Feed", image)

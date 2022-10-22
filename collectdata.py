@@ -39,6 +39,48 @@ def draw_landmarks(image, landmarks):
 # Access the webcam
 capture = cv2.VideoCapture(0)
 
+def draw_information(action, sequence, frame_num, image):
+    if frame_num == 0:
+        cv2.putText(
+                        image,
+                        "STARTING COLLECTION",
+                        (120, 200),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1,
+                        (0, 255, 0),
+                        1,
+                        cv2.LINE_AA,
+                    )
+
+        cv2.putText(
+                        image,
+                        "COLLECTING SEQUENCE {} OF ACTION {}".format(sequence, action),
+                        (15, 12),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        (0, 0, 255),
+                        1,
+                        cv2.LINE_AA,
+                    )
+
+                    # Show the feed
+        cv2.imshow("OpenCV Feed", image)
+        cv2.waitKey(2000)
+    else:
+        cv2.putText(
+                        image,
+                        "COLLECTING SEQUENCE {} OF ACTION {}".format(sequence, action),
+                        (15, 12),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        (0, 0, 255),
+                        1,
+                        cv2.LINE_AA,
+                    )
+
+                    # Show the feed
+        cv2.imshow("OpenCV Feed", image)
+
 with mp_holistic.Holistic(
     min_detection_confidence=0.5, min_tracking_confidence=0.5
 ) as holistic:
@@ -52,46 +94,7 @@ with mp_holistic.Holistic(
                 image, results = mediapipe_detection(frame, holistic)
                 draw_landmarks(image, results)
 
-                if frame_num == 0:
-                    cv2.putText(
-                        image,
-                        "STARTING COLLECTION",
-                        (120, 200),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        1,
-                        (0, 255, 0),
-                        1,
-                        cv2.LINE_AA,
-                    )
-
-                    cv2.putText(
-                        image,
-                        "COLLECTING SEQUENCE {} OF ACTION {}".format(sequence, action),
-                        (15, 12),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (0, 0, 255),
-                        1,
-                        cv2.LINE_AA,
-                    )
-
-                    # Show the feed
-                    cv2.imshow("OpenCV Feed", image)
-                    cv2.waitKey(2000)
-                else:
-                    cv2.putText(
-                        image,
-                        "COLLECTING SEQUENCE {} OF ACTION {}".format(sequence, action),
-                        (15, 12),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (0, 0, 255),
-                        1,
-                        cv2.LINE_AA,
-                    )
-
-                    # Show the feed
-                    cv2.imshow("OpenCV Feed", image)
+                draw_information(action, sequence, frame_num, image)
 
                 if results.right_hand_landmarks:
                     right_hand = np.array(
