@@ -1,2 +1,5 @@
 venv/
 MP_Data/
+
+__pycache__/
+.vscode/
