@@ -1,5 +1,7 @@
 venv/
+
 MP_Data/
+Logs/
 
 __pycache__/
 .vscode/
