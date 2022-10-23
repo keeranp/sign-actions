@@ -12,9 +12,9 @@ n_sequences = 30
 sequence_length = 30
 
 sequence = []
-sentence = []
+current_sign = ""
 predictions = []
-threshold = 0.7
+threshold = 0.8
 
 mp_holistic = mp.solutions.holistic
 mp_drawing = mp.solutions.drawing_utils
@@ -104,29 +104,26 @@ with mp_holistic.Holistic(
             right_hand = np.array(
                 [[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]
             ).flatten()
+
+            sequence.append(right_hand)
+            sequence = sequence[-30:]
+
+            if len(sequence) == 30:
+                res = model.predict(np.expand_dims(sequence, axis=0))[0]
+                predictions.append(np.argmax(res))
+
+                if np.unique(predictions[-15:])[0] == np.argmax(res):
+                    if res[np.argmax(res)] > threshold:
+                        current_sign = actions[np.argmax(res)]
+            else:
+                res = [0,0,0,0,0]
+            draw_prob(image,res)
         else:
-            right_hand = np.zeros(21 * 3)
+            sequence = []
+            predictions = []
+            current_sign = ""
 
-        sequence.append(right_hand)
-        sequence = sequence[-30:]
-
-        if len(sequence) == 30:
-            res = model.predict(np.expand_dims(sequence, axis=0))[0]
-            print(actions[np.argmax(res)])
-            predictions.append(np.argmax(res))
-
-            if np.unique(predictions[-10:])[0] == np.argmax(res):
-                if res[np.argmax(res)] > threshold:
-                    if len(sentence) > 0:
-                        if actions[np.argmax(res)] != sentence[-1]:
-                            sentence.append(actions[np.argmax(res)])
-                    else:
-                        sentence.append(actions[np.argmax(res)])
-
-        if len(sentence) > 5:
-            sentence = sentence[-5:]
-
-        draw_prediction(sentence, image)
+        draw_prediction(current_sign, image)
 
         # Show the feed
         cv2.imshow("OpenCV Feed", image)
