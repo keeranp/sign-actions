@@ -35,6 +35,46 @@ def draw_landmarks(image, landmarks):
     )
 
 
+def draw_prediction(sign, image):
+    cv2.rectangle(image, (0, 0), (640, 40), (255, 128, 0), -1)
+    cv2.putText(
+        image,
+        sign,
+        (3, 30),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (255, 255, 255),
+        1,
+        cv2.LINE_AA,
+    )
+
+
+colors = [
+    (26, 188, 156),
+    (52, 152, 219),
+    (52, 73, 94),
+    (241, 196, 15),
+    (231, 76, 60),
+]
+
+
+def draw_prob(image, res):
+    for i, prob in enumerate(res):
+        cv2.rectangle(
+            image, (0, 60 + i * 40), (int(prob * 100), 90 + i * 40), colors[i], -1
+        )
+        cv2.putText(
+            image,
+            actions[i],
+            (0, 85 + i * 40),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (255, 255, 255),
+            1,
+            cv2.LINE_AA,
+        )
+
+
 # Build the model
 model = build_model(len(actions))
 model.compile(
@@ -46,20 +86,6 @@ model.load_weights("action.h5")
 
 # Access the webcam
 capture = cv2.VideoCapture(0)
-
-
-def draw_prediction(sentence, image):
-    cv2.rectangle(image, (0, 0), (640, 40), (255, 128, 0), -1)
-    cv2.putText(
-        image,
-        " ".join(sentence),
-        (3, 30),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        1,
-        (255, 255, 255),
-        1,
-        cv2.LINE_AA,
-    )
 
 
 with mp_holistic.Holistic(
