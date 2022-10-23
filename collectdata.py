@@ -7,8 +7,8 @@ DATA_PATH = os.path.join("MP_Data")
 actions = ["one", "two", "three", "four", "five"]
 # Thirty videos
 n_sequences = 30
-# Thirty frames per video
-sequence_length = 30
+# Twenty frames per video
+sequence_length = 20
 
 for action in actions:
     for sequence in range(n_sequences):

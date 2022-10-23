@@ -8,8 +8,8 @@ DATA_PATH = os.path.join("MP_Data")
 actions = ["one", "two", "three", "four", "five"]
 # Thirty videos
 n_sequences = 30
-# Thirty frames per video
-sequence_length = 30
+# Twenty frames per video
+sequence_length = 20
 
 sequence = []
 current_sign = ""
@@ -106,9 +106,9 @@ with mp_holistic.Holistic(
             ).flatten()
 
             sequence.append(right_hand)
-            sequence = sequence[-30:]
+            sequence = sequence[-sequence_length:]
 
-            if len(sequence) == 30:
+            if len(sequence) == sequence_length:
                 res = model.predict(np.expand_dims(sequence, axis=0))[0]
                 predictions.append(np.argmax(res))
 
@@ -116,6 +116,7 @@ with mp_holistic.Holistic(
                     if res[np.argmax(res)] > threshold:
                         current_sign = actions[np.argmax(res)]
             else:
+                current_sign = ""
                 res = [0,0,0,0,0]
             draw_prob(image,res)
         else:

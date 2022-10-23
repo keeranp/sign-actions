@@ -9,8 +9,8 @@ DATA_PATH = os.path.join("MP_Data")
 actions = ["one", "two", "three", "four", "five"]
 # Thirty videos
 n_sequences = 30
-# Thirty frames per video
-sequence_length = 30
+# Twenty frames per video
+sequence_length = 20
 
 label_map = {label: num for num, label in enumerate(actions)}
 
@@ -25,7 +25,7 @@ model.compile(
 
 x_train, x_test, y_train, y_test = load_dataset()
 
-model.fit(x_train, y_train, epochs=2000, callbacks=[tb_callback])
+model.fit(x_train, y_train, epochs=200, callbacks=[tb_callback])
 model.save("action.h5")
 
 #Test the model

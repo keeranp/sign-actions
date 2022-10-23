@@ -7,8 +7,8 @@ DATA_PATH = os.path.join("MP_Data")
 actions = ["one", "two", "three", "four", "five"]
 # Thirty videos
 n_sequences = 30
-# Thirty frames per video
-sequence_length = 30
+# Twenty frames per video
+sequence_length = 20
 
 def load_dataset():
     label_map = {label: num for num, label in enumerate(actions)}
@@ -29,4 +29,4 @@ def load_dataset():
     x = np.array(sequences)
     y = to_categorical(labels).astype(int)
 
-    return train_test_split(x, y, test_size=0.05)
+    return train_test_split(x, y, test_size=0.2)
