@@ -2,7 +2,11 @@ import cv2
 import numpy as np
 import mediapipe as mp
 
+from executeaction import execute_action
+
 FINGERTIP_IDS = [8, 12, 16, 20]
+
+window = []
 
 mp_holistic = mp.solutions.holistic
 mp_drawing = mp.solutions.drawing_utils
@@ -23,7 +27,7 @@ def draw_landmarks(image, landmarks):
 
 
 def draw_prediction(image, finger_count):
-    cv2.rectangle(image, (0, 0), (640, 40), (26, 188, 156), -1)
+    cv2.rectangle(image, (0, 0), (640, 40), (156, 188, 26), -1)
     cv2.putText(
         image,
         str(finger_count),
@@ -41,6 +45,7 @@ capture = cv2.VideoCapture(0)
 with mp_holistic.Holistic(
     min_detection_confidence=0.5, min_tracking_confidence=0.5
 ) as holistic:
+    print("Start capturing")
     while capture.isOpened():
         # Read the webcam feed
         ret, frame = capture.read()
@@ -69,13 +74,19 @@ with mp_holistic.Holistic(
                 else:
                     fingers.append(0)
 
+            window.append(fingers.count(1))
+            window = window[-10:]
             draw_prediction(image, fingers.count(1))
+            if np.unique(window)[0] == fingers.count(1) and len(window) == 10:
+                window = []
+                execute_action(fingers.count(1))
+        else:
+            window = []
 
         # Show the feed
-        cv2.imshow("OpenCV Feed", image)
+        # cv2.imshow("OpenCV Feed", image)
 
         if cv2.waitKey(1) == ord("q"):
             break
-
 capture.release()
 cv2.destroyAllWindows()
